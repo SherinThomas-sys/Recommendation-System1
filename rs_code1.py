@@ -98,13 +98,10 @@ def extract_specs(title):
     storage = int(storage_match.group(1)) if storage_match else 0
     return ram, storage
 
-# Apply and create new DataFrame
 df[['RAM_GB', 'Storage_GB']] = df['product_title'].apply(lambda x: pd.Series(extract_specs(str(x))))
 
-# Save to CSV
 df[['product_title', 'RAM_GB', 'Storage_GB']].to_csv("spec_extraction.csv", index=False)
 
-# Download the CSV file to your local machine
 files.download("spec_extraction.csv")
 
 print("Upload extracted.csv")
@@ -118,13 +115,11 @@ import streamlit as st
 import pandas as pd
 import random
 
-# Load datasets
 df = pd.read_csv("cleaned_main_product_data.csv")
 df1 = pd.read_csv("cleaned_all_accessories.csv")
 df2 = pd.read_csv("extracted_main_product_data.csv")
 df3 = pd.read_csv("spec_extraction.csv")
 
-# Merge feature-extracted and spec-extracted data
 df_full = df.merge(df2, on=['product_id', 'category', 'product_title', 'brand', 'model', 'features', 'price', 'rating', 'review_count', 'image_url'], how='left')
 df_full = df_full.merge(df3, on='product_title', how='left')
 
@@ -134,7 +129,6 @@ for col in ['variant_extracted', 'series_extracted', 'device_extracted']:
 df_full['RAM_GB'] = df_full['RAM_GB'].fillna(0)
 df_full['Storage_GB'] = df_full['Storage_GB'].fillna(0)
 
-# Streamlit UI
 st.title("✨RECOMMENDATION SYSTEM")
 
 category_option = st.selectbox("Choose your category 🛍️", df_full['category'].dropna().unique())
